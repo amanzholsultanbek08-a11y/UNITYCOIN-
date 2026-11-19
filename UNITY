@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNITYCOIN Official</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #07152e;
+  color: white;
+}
+
+header {
+  background: #102b52;
+  padding: 28px;
+  text-align: center;
+  border-bottom: 3px solid #e5b83f;
+}
+
+.logo {
+  color: #e5b83f;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+header p {
+  margin-top: 10px;
+  color: #ccd8eb;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  padding: 20px;
+  background: #0b1e3b;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.hero {
+  text-align: center;
+  padding: 85px 20px;
+}
+
+.hero h1 {
+  color: #e5b83f;
+  font-size: 38px;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  color: #ccd8eb;
+  line-height: 1.7;
+}
+
+section {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+h2 {
+  color: #e5b83f;
+  margin-bottom: 25px;
+}
+
+.card {
+  max-width: 600px;
+  margin: auto;
+  padding: 30px;
+  background: #102b52;
+  border: 1px solid #e5b83f;
+  border-radius: 14px;
+}
+
+button {
+  background: #e5b83f;
+  color: #07152e;
+  border: none;
+  padding: 14px 25px;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+input {
+  width: 100%;
+  max-width: 350px;
+  padding: 14px;
+  border: none;
+  border-radius: 7px;
+  margin-top: 20px;
+}
+
+#memberCount {
+  color: #e5b83f;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 20px;
+}
+
+.member {
+  background: #07152e;
+  border: 1px solid #e5b83f;
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 12px;
+  text-align: left;
+}
+
+.member span {
+  color: #e5b83f;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  background: #102b52;
+  color: #ccd8eb;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">UNITYCOIN</div>
+  <p>ONE COMMUNITY. ONE FUTURE.</p>
+</header>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#about">About</a>
+  <a href="#community">Community</a>
+</nav>
+
+<div class="hero" id="home">
+  <h1>WELCOME TO UNITYCOIN</h1>
+  <p>A community built on unity, technology and innovation.</p>
+  <button onclick="goToCommunity()">JOIN OUR COMMUNITY</button>
+</div>
+
+<section id="about">
+  <h2>ABOUT UNITYCOIN</h2>
+  <div class="card">
+    <p>UNITYCOIN is a community-focused digital project.</p>
+    <br>
+    <p>Our vision is to connect people through digital services.</p>
+  </div>
+</section>
+
+<section id="community">
+  <h2>UNITYCOIN COMMUNITY</h2>
+
+  <div class="card">
+    <h3>COMMUNITY MEMBERS</h3>
+
+    <div id="memberCount">0 MEMBERS</div>
+
+    <input
+      type="text"
+      id="username"
+      placeholder="Choose a username"
+      maxlength="20"
+    >
+
+    <br>
+    <button onclick="joinCommunity()">JOIN COMMUNITY</button>
+
+    <div id="message"></div>
+
+    <h3 style="margin-top:30px;color:#e5b83f">
+      MEMBER LIST
+    </h3>
+
+    <div id="memberList"></div>
+  </div>
+</section>
+
+<footer>
+  <p>UNITYCOIN © 2026</p>
+  <p>COMMUNITY • UNITY • INNOVATION</p>
+</footer>
+
+<script>
+let members = [];
+
+try {
+  members = JSON.parse(
+    localStorage.getItem("unitycoin_members") || "[]"
+  );
+
+  if (!Array.isArray(members)) {
+    members = [];
+  }
+} catch (error) {
+  members = [];
+}
+
+function displayMembers() {
+  document.getElementById("memberCount").innerText =
+    members.length + " MEMBERS";
+
+  let list = document.getElementById("memberList");
+  list.innerHTML = "";
+
+  members.forEach(function(member, index) {
+    let item = document.createElement("div");
+    item.className = "member";
+
+    let number = document.createElement("span");
+    number.textContent = "Member #" +
+      String(index + 1).padStart(3, "0");
+
+    let name = document.createElement("p");
+    name.textContent = member;
+
+    item.appendChild(number);
+    item.appendChild(name);
+    list.appendChild(item);
+  });
+}
+
+function joinCommunity() {
+  let input = document.getElementById("username");
+  let username = input.value.trim();
+  let message = document.getElementById("message");
+
+  if (!username) {
+    message.textContent = "Please enter a username!";
+    return;
+  }
+
+  let exists = members.some(function(member) {
+    return member.toLowerCase() === username.toLowerCase();
+  });
+
+  if (exists) {
+    message.textContent = "This username is already registered!";
+    return;
+  }
+
+  members.push(username);
+
+  try {
+    localStorage.setItem(
+      "unitycoin_members",
+      JSON.stringify(members)
+    );
+  } catch (error) {
+    members.pop();
+    message.textContent = "Could not save member on this device.";
+    return;
+  }
+
+  message.textContent =
+    "Welcome to UNITYCOIN, " + username + "!";
+
+  input.value = "";
+  displayMembers();
+}
+
+function goToCommunity() {
+  document.getElementById("community").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+displayMembers();
+</script>
+
+</body>
+</html>
